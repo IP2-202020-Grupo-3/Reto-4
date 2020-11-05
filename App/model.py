@@ -72,8 +72,6 @@ def newAnalyzer():
 # Funciones para agregar informacion al grafo
 
 def addTrip(analyzer, trip):
-    """
-    """
     origin = trip['start station id']
     destination = trip['end station id']
     duration = int(trip['tripduration'])
@@ -90,7 +88,7 @@ def addStation(analyzer, stationid):
 def addConnection(analyzer, origin, destination, duration):
     edge = gr.getEdge(analyzer["graph"], origin, destination)
     if edge is None:
-        gr.addEdge(analyzer["graph"], origin, destination, duration)
+        gr.addEdge(analyzer["graph"], origin, destination, duration)      
     return analyzer
 
 # ==============================
@@ -100,8 +98,8 @@ def connectedComponents(analyzer):
     analyzer['components'] = scc.KosarajuSCC(analyzer['graph'])
     return scc.connectedComponents(analyzer['components'])
 
-def sameCC(sc, station1, station2):
-    return scc.stronglyConnected(sc, station1, station2)
+def sameCC(analyzer, station1, station2):
+    return scc.stronglyConnected(analyzer["components"], station1, station2)
 
 def totalEdges(analyzer):
     return gr.numEdges(analyzer['graph'])
@@ -117,14 +115,10 @@ def totalStations(analyzer):
 # Funciones de Comparación
 # ==============================
 
-def compareStations(station, keyvaluestop):
-    """
-    Compara dos estaciones
-    """
-    stopcode = keyvaluestop['key']
-    if (station == stopcode):
+def compareStations(st1, st2):
+    if (st1 == st2):
         return 0
-    elif (station > stopcode):
+    elif (st1 > st2):
         return 1
     else:
         return -1

@@ -80,8 +80,15 @@ def optionTwo():
 
 
 def optionThree():
-    print('El número de componentes conectados es: ' +
+    print('El número de componentes fuertemente conectados es: ' +
           str(controller.connectedComponents(cont)))
+    est1 = input("Ingrese la estación 1: ")
+    est2 = input("Ingrese la estación 2: ")
+    connect = cont.sameCC(cont, est1, est2)
+    if connect == True:
+        print("Las dos estaciones pertenecen al mismo cluster.")
+    else:
+        print("Las dos estaciones no pertenecen al mismo cluster.")
 
 
 def optionFour():
@@ -133,13 +140,13 @@ while True:
         print("Tiempo de ejecución: " + str(executiontime))
 
     elif int(inputs[0]) == 4:
-        msg = "Estación Base: BusStopCode-ServiceNo (Ej: 75009-10): "
+        msg = "Estación Base: Ej: 74"
         initialStation = input(msg)
         executiontime = timeit.timeit(optionFour, number=1)
         print("Tiempo de ejecución: " + str(executiontime))
 
     elif int(inputs[0]) == 5:
-        destStation = input("Estación destino (Ej: 15151-10): ")
+        destStation = input("Estación destino (Ej: 128): ")
         executiontime = timeit.timeit(optionFive, number=1)
         print("Tiempo de ejecución: " + str(executiontime))
 
