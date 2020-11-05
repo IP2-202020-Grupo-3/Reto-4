@@ -42,16 +42,89 @@ de creacion y consulta sobre las estructuras de datos.
 #                       API
 # -----------------------------------------------------
 
+def newAnalyzer():
+    """ Inicializa el analizador
+
+   stations: Tabla de hash para guardar los vertices del grafo
+   graph: Grafo para representar las rutas entre estaciones
+   components: Almacena la informacion de los componentes conectados
+   paths: Estructura que almancena los caminos de costo minimo desde un
+           vertice determinado a todos los otros vértices del grafo
+    """
+    analyzer = {
+                'stations': None,
+                'graph': None,
+                'components': None,
+                'paths': None
+                    }
+
+    analyzer['stops'] = m.newMap(numelements=14000,
+                                     maptype='PROBING',
+                                     comparefunction=compareStations)
+
+    analyzer['graph'] = gr.newGraph(datastructure='ADJ_LIST',
+                                              directed=True,
+                                              size=10000,
+                                              comparefunction=compareStations)
+    return analyzer
+
+
 # Funciones para agregar informacion al grafo
+
+def addTrip(analyzer, trip):
+    """
+    """
+    origin = trip['start station id']
+    destination = trip['end station id']
+    duration = int(trip['tripduration'])
+    addStation(analyzer, origin)
+    addStation(analyzer, destination)
+    addConnection(analyzer, origin, destination, duration)
+    return analyzer
+
+def addStation(analyzer, stationid):
+    if not gr.containsVertex(analyzer["graph"], stationid):
+            gr.insertVertex(analyzer["graph"], stationid)
+    return analyzer
+
+def addConnection(analyzer, origin, destination, duration):
+    edge = gr.getEdge(analyzer["graph"], origin, destination)
+    if edge is None:
+        gr.addEdge(analyzer["graph"], origin, destination, duration)
+    return analyzer
 
 # ==============================
 # Funciones de consulta
 # ==============================
+def connectedComponents(analyzer):
+    analyzer['components'] = scc.KosarajuSCC(analyzer['graph'])
+    return scc.connectedComponents(analyzer['components'])
+
+def sameCC(sc, station1, station2):
+    return scc.stronglyConnected(sc, station1, station2)
+
+def totalEdges(analyzer):
+    return gr.numEdges(analyzer['graph'])
+
+def totalStations(analyzer):
+    return gr.numVertices(analyzer['graph'])
 
 # ==============================
 # Funciones Helper
 # ==============================
 
 # ==============================
-# Funciones de Comparacion
+# Funciones de Comparación
 # ==============================
+
+def compareStations(station, keyvaluestop):
+    """
+    Compara dos estaciones
+    """
+    stopcode = keyvaluestop['key']
+    if (station == stopcode):
+        return 0
+    elif (station > stopcode):
+        return 1
+    else:
+        return -1
