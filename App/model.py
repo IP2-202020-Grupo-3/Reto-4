@@ -31,6 +31,7 @@ from DISClib.DataStructures import listiterator as it
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
+from DISClib.DataStructures import edge as ed
 assert config
 
 """
@@ -58,7 +59,7 @@ def newAnalyzer():
                 'paths': None
                     }
 
-    analyzer['stops'] = m.newMap(numelements=14000,
+    analyzer['stations'] = m.newMap(numelements=14000,
                                      maptype='PROBING',
                                      comparefunction=compareStations)
 
@@ -88,7 +89,9 @@ def addStation(analyzer, stationid):
 def addConnection(analyzer, origin, destination, duration):
     edge = gr.getEdge(analyzer["graph"], origin, destination)
     if edge is None:
-        gr.addEdge(analyzer["graph"], origin, destination, duration)      
+        gr.addEdge(analyzer["graph"], origin, destination, duration)
+    else:
+        ed.updateAverageWeight(edge, duration) 
     return analyzer
 
 # ==============================
@@ -116,9 +119,10 @@ def totalStations(analyzer):
 # ==============================
 
 def compareStations(st1, st2):
-    if (st1 == st2):
+    est = st2['key']
+    if (st1 == est):
         return 0
-    elif (st1 > st2):
+    elif (st1 > est):
         return 1
     else:
         return -1
