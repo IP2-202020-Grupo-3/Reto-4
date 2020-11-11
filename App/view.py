@@ -84,11 +84,17 @@ def optionThree():
           str(controller.connectedComponents(cont)))
     est1 = input("Ingrese la estación 1: ")
     est2 = input("Ingrese la estación 2: ")
-    connect = cont.sameCC(cont, est1, est2)
+    connect = controller.sameCC(cont, est1, est2)
     if connect == True:
-        print("Las dos estaciones pertenecen al mismo cluster.")
-    else:
+        print("Las dos estaciones sí pertenecen al mismo cluster.")
+    elif connect == False:
         print("Las dos estaciones no pertenecen al mismo cluster.")
+    elif connect == "0":
+        print("Ninguna de las estaciones ingresadas existe.")
+    elif connect == "1":
+        print("La estación 1 ingresada no existe.")
+    else:
+        print("La estación 2 ingresada no existe.")
 
 
 def optionFour():

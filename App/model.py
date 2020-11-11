@@ -102,7 +102,16 @@ def connectedComponents(analyzer):
     return scc.connectedComponents(analyzer['components'])
 
 def sameCC(analyzer, station1, station2):
-    return scc.stronglyConnected(analyzer["components"], station1, station2)
+    vert1 = gr.containsVertex(analyzer["graph"], station1)
+    vert2 = gr.containsVertex(analyzer["graph"], station2)
+    if vert1 is False and vert2 is False:
+        return "0"
+    elif vert1 is False:
+        return "1"
+    elif vert2 is False:
+        return "2"
+    else:
+        return scc.stronglyConnected(analyzer["components"], station1, station2)
 
 def totalEdges(analyzer):
     return gr.numEdges(analyzer['graph'])
