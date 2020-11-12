@@ -49,7 +49,8 @@ def BreadthFisrtSearch(graph, source):
     try:
         search = {
                   'source': source,
-                  'visited': None
+                  'visited': None,
+                  "distance": 0
                   }
         search['visited'] = map.newMap(numelements=g.numVertices(graph),
                                        maptype='PROBING',
@@ -138,7 +139,7 @@ def pathTo(search, vertex):
     try:
         if hasPathTo(search, vertex) is False:
             return None
-        path = stack.newStack()
+        path = stack.newStack("ARRAY_LIST")
         while vertex != search['source']:
             stack.push(path, vertex)
             vertex = map.get(search['visited'],
@@ -147,3 +148,4 @@ def pathTo(search, vertex):
         return path
     except Exception as exp:
         error.reraise(exp, 'bfs:pathto')
+    

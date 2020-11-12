@@ -363,7 +363,7 @@ def adjacents(graph, vertex):
     try:
         element = map.get(graph['vertices'], vertex)
         lst = element['value']
-        lstresp = lt.newList()
+        lstresp = lt.newList("ARRAY_LIST")
         iter = it.newIterator(lst)
         while (it.hasNext(iter)):
             edge = it.next(iter)

@@ -31,6 +31,7 @@ from App import controller
 from DISClib.ADT import stack
 import timeit
 assert config
+from DISClib.ADT import map as m
 
 """
 La vista se encarga de la interacción con el usuario.
@@ -60,7 +61,7 @@ def printMenu():
     print("1- Inicializar Analizador")
     print("2- Cargar información")
     print("3- Calcular componentes conectados")
-    print("4- Establecer estación de salida")
+    print("4- Calcular ruta turística circular")
     print("5- Pendiente")
     print("6- Pendiente")
     print("7- Pendiente")
@@ -98,14 +99,30 @@ def optionThree():
 
 
 def optionFour():
-    controller.minimumCostPaths(cont, initialStation)
+    destStation = input("Ingrese la estación final: ")
+    distanciaIni =float(input("Ingrese en minutos el tiempo mínimo disponible: "))
+    distanciaFin = float(input("Ingrese en minutos el tiempo máximo disponible: "))
+    path = controller.getPaths(cont, destStation, distanciaIni, distanciaFin)
+    if path is not None:
+        pathlen = stack.size(path)
+        num = 1
+        print('Se encontraron {0} rutas:'.format(pathlen))
+        while (not stack.isEmpty(path)):
+            stop = stack.pop(path)
+            print("Ruta {0}: ".format(num))
+            for statid in stop["elements"]:
+                entry = m.get(cont["stations"], statid)
+                print("{0} - ID: {1}".format(entry["value"]["elements"][0], statid))
+            print("Tiempo en recorrer: {0} minutos\n".format((round(stop["distance"]/60, 2))))           
+            num +=1
+    else:
+        print('No hay camino')
 
 
 def optionFive():
-    haspath = controller.hasPath(cont, destStation)
-    print('Hay camino entre la estación base : ' +
-          'y la estación: ' + destStation + ': ')
-    print(haspath)
+    val = controller.minimumCostPaths(cont, initialStation)
+    if val == "0":
+        print("La estación ingresada no existe.")
 
 
 def optionSix():
@@ -115,7 +132,8 @@ def optionSix():
         print('El camino es de longitud: ' + str(pathlen))
         while (not stack.isEmpty(path)):
             stop = stack.pop(path)
-            print(stop)
+            print(stop["first"])
+            
     else:
         print('No hay camino')
 
@@ -146,13 +164,10 @@ while True:
         print("Tiempo de ejecución: " + str(executiontime))
 
     elif int(inputs[0]) == 4:
-        msg = "Estación Base: Ej: 74: "
-        initialStation = input(msg)
         executiontime = timeit.timeit(optionFour, number=1)
         print("Tiempo de ejecución: " + str(executiontime))
 
     elif int(inputs[0]) == 5:
-        destStation = input("Estación destino (Ej: 128): ")
         executiontime = timeit.timeit(optionFive, number=1)
         print("Tiempo de ejecución: " + str(executiontime))
 
@@ -164,7 +179,6 @@ while True:
     elif int(inputs[0]) == 7:
         executiontime = timeit.timeit(optionSeven, number=1)
         print("Tiempo de ejecución: " + str(executiontime))
-
     else:
         sys.exit(0)
 sys.exit(0)

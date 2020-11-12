@@ -32,6 +32,8 @@ from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
 from DISClib.DataStructures import edge as ed
+from DISClib.Algorithms.Graphs import bfs
+from DISClib.ADT import stack
 assert config
 
 """
@@ -59,7 +61,7 @@ def newAnalyzer():
                 'paths': None
                     }
 
-    analyzer['stations'] = m.newMap(numelements=14000,
+    analyzer['stations'] = m.newMap(numelements=2000,
                                      maptype='PROBING',
                                      comparefunction=compareStations)
 
@@ -92,6 +94,8 @@ def addTripStop(analyzer, route):
     if entry is None:
         lststations = lt.newList("ARRAY_LIST", cmpfunction=compareroutes)
         lt.addLast(lststations, route["end station name"])
+        lt.addLast(lststations, route["end station latitude"])
+        lt.addLast(lststations, route["end station longitude"])
         m.put(analyzer['stations'], route['end station id'], lststations)
     else:
         lststations = entry['value']
@@ -133,9 +137,49 @@ def totalEdges(analyzer):
 def totalStations(analyzer):
     return gr.numVertices(analyzer['graph'])
 
+def getPaths(analyzer, initStation, distanciaIni, distanciaFin):
+    if gr.containsVertex(analyzer["graph"], initStation) == True:
+        LT = lt.newList("ARRAY_LIST")
+        finlist = lt.newList("ARRAY_LIST")
+        adj = gr.adjacents(analyzer["graph"], initStation)
+        connectedComponents(analyzer)
+        for element in adj["elements"]:
+            val = sameCC(analyzer, initStation, element)
+            if val == True:
+                ini = 0
+                fin = 1
+                peso = 0
+                analyzer['paths'] = bfs.BreadthFisrtSearch(analyzer["graph"], element)
+                camino = bfs.pathTo(analyzer["paths"], initStation)
+                lt.addFirst(camino, initStation)
+                while ini < lt.size(camino)-1:
+                    arco = gr.getEdge(analyzer["graph"], camino["elements"][ini], camino["elements"][fin])
+                    peso += float(arco["weight"])
+                    ini +=1
+                    fin +=1
+                camino["distance"] = peso
+                lt.addLast(LT, camino)
+        if LT is not None:
+            minIni = distanciaIni*60
+            maxIni = distanciaFin*60
+            while (not stack.isEmpty(LT)):
+                stop = stack.pop(LT)
+                maxIni -= int(stop["size"])*20
+                if stop["distance"] >= minIni and stop["distance"] <= maxIni: 
+                    lt.addLast(finlist, stop)                  
+        return finlist
+
+
+
 def minimumCostPaths(analyzer, initialStation):
-    analyzer['paths'] = djk.Dijkstra(analyzer['graph'], initialStation)
-    return analyzer
+    if gr.containsVertex(analyzer["graph"], initialStation) == True:
+        analyzer['paths'] = djk.Dijkstra(analyzer['graph'], initialStation)
+        return analyzer
+    else:
+        return "0"
+
+def hasPath(analyzer, destStation):
+    return djk.hasPathTo(analyzer['paths'], destStation)
 
 def minimumCostPath(analyzer, destStation):
     path = djk.pathTo(analyzer['paths'], destStation)

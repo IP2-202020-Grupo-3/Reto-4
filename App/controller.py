@@ -86,3 +86,12 @@ def connectedComponents(analyzer):
     
 def minimumCostPaths(analyzer, initialStation):
     return model.minimumCostPaths(analyzer, initialStation)
+
+def minimumCostPath(analyzer, destStation):
+    return model.minimumCostPath(analyzer, destStation)
+
+def hasPath(analyzer, destStation):
+    return model.hasPath(analyzer, destStation)
+
+def getPaths(analyzer, initStation, distanciaIni, distanciaFin):
+    return model.getPaths(analyzer, initStation, distanciaIni, distanciaFin)
