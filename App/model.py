@@ -79,11 +79,25 @@ def addTrip(analyzer, trip):
     addStation(analyzer, origin)
     addStation(analyzer, destination)
     addConnection(analyzer, origin, destination, duration)
+    addTripStop(analyzer, trip)
     return analyzer
 
 def addStation(analyzer, stationid):
     if not gr.containsVertex(analyzer["graph"], stationid):
             gr.insertVertex(analyzer["graph"], stationid)
+    return analyzer
+
+def addTripStop(analyzer, route):
+    entry = m.get(analyzer['stations'], route["end station id"])
+    if entry is None:
+        lststations = lt.newList("ARRAY_LIST", cmpfunction=compareroutes)
+        lt.addLast(lststations, route["end station name"])
+        m.put(analyzer['stations'], route['end station id'], lststations)
+    else:
+        lststations = entry['value']
+        info = route['end station name']
+        if not lt.isPresent(lststations, info):
+            lt.addLast(lststations, info)
     return analyzer
 
 def addConnection(analyzer, origin, destination, duration):
@@ -119,6 +133,14 @@ def totalEdges(analyzer):
 def totalStations(analyzer):
     return gr.numVertices(analyzer['graph'])
 
+def minimumCostPaths(analyzer, initialStation):
+    analyzer['paths'] = djk.Dijkstra(analyzer['graph'], initialStation)
+    return analyzer
+
+def minimumCostPath(analyzer, destStation):
+    path = djk.pathTo(analyzer['paths'], destStation)
+    return path
+
 # ==============================
 # Funciones Helper
 # ==============================
@@ -132,6 +154,14 @@ def compareStations(st1, st2):
     if (st1 == est):
         return 0
     elif (st1 > est):
+        return 1
+    else:
+        return -1
+
+def compareroutes(route1, route2):
+    if (route1 == route2):
+        return 0
+    elif (route1 > route2):
         return 1
     else:
         return -1

@@ -60,7 +60,7 @@ def printMenu():
     print("1- Inicializar Analizador")
     print("2- Cargar información")
     print("3- Calcular componentes conectados")
-    print("4- Pendiente")
+    print("4- Establecer estación de salida")
     print("5- Pendiente")
     print("6- Pendiente")
     print("7- Pendiente")
@@ -146,7 +146,7 @@ while True:
         print("Tiempo de ejecución: " + str(executiontime))
 
     elif int(inputs[0]) == 4:
-        msg = "Estación Base: Ej: 74"
+        msg = "Estación Base: Ej: 74: "
         initialStation = input(msg)
         executiontime = timeit.timeit(optionFour, number=1)
         print("Tiempo de ejecución: " + str(executiontime))

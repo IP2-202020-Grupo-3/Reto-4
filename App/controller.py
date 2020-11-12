@@ -83,3 +83,6 @@ def totalStations(analyzer):
 
 def connectedComponents(analyzer):
     return model.connectedComponents(analyzer)
+    
+def minimumCostPaths(analyzer, initialStation):
+    return model.minimumCostPaths(analyzer, initialStation)
