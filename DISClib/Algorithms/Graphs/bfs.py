@@ -49,8 +49,7 @@ def BreadthFisrtSearch(graph, source):
     try:
         search = {
                   'source': source,
-                  'visited': None,
-                  "distance": 0
+                  'visited': None
                   }
         search['visited'] = map.newMap(numelements=g.numVertices(graph),
                                        maptype='PROBING',

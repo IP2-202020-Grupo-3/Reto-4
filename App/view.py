@@ -99,14 +99,14 @@ def optionThree():
 
 
 def optionFour():
-    destStation = input("Ingrese la estación final: ")
+    destStation = input("Ingrese la estación a buscar: ")
     distanciaIni =float(input("Ingrese en minutos el tiempo mínimo disponible: "))
     distanciaFin = float(input("Ingrese en minutos el tiempo máximo disponible: "))
     path = controller.getPaths(cont, destStation, distanciaIni, distanciaFin)
     if path is not None:
         pathlen = stack.size(path)
         num = 1
-        print('Se encontraron {0} rutas:'.format(pathlen))
+        print('Se encontraron {0} rutas:\n'.format(pathlen))
         while (not stack.isEmpty(path)):
             stop = stack.pop(path)
             print("Ruta {0}: ".format(num))
