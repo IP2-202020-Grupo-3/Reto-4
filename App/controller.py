@@ -95,3 +95,6 @@ def hasPath(analyzer, destStation):
 
 def getPaths(analyzer, initStation, distanciaIni, distanciaFin):
     return model.getPaths(analyzer, initStation, distanciaIni, distanciaFin)
+
+def resistancePath(analyzer, initStation, resistance):
+    return model.resistancePath(analyzer, initStation, resistance)

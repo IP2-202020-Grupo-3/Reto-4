@@ -63,7 +63,7 @@ def printMenu():
     print("3- Calcular componentes conectados")
     print("4- Calcular ruta turística circular")
     print("5- Pendiente")
-    print("6- Pendiente")
+    print("6- Calcular ruta turística por resistencia")
     print("7- Pendiente")
     print("0- Salir")
     print("*******************************************")
@@ -126,6 +126,44 @@ def optionFive():
 
 
 def optionSix():
+    initStation = input("Ingrese la estación inicial: ")
+    resistencia = int(input("Ingrese su tiempo máximo de resistencia: "))
+    path = controller.resistancePath(cont, initStation, resistencia)
+    if path is not None:
+        pathlen = stack.size(path)
+        num = 1
+        print('Se encontraron {0} rutas:'.format(pathlen))
+        if pathlen >= 100:
+            dec = input("¿Desea imprimir la información de todas las rutas? (tenga en cuenta de que se encontraron demasiadas rutas) [S/N]\nSi responde N se mostrarán solo las primeras 100: ")
+            if dec == "S" or dec == "s":
+                while (not stack.isEmpty(path)):
+                    stop = stack.pop(path)
+                    print("Ruta {0}: ".format(num))
+                    for statid in stop["elements"]:
+                        entry = m.get(cont["stations"], statid)
+                        print("{0} - ID: {1}".format(entry["value"]["elements"][0], statid))
+                    print("Tiempo en recorrer: {0} minutos\n".format((round(stop["distance"]/60, 2))))           
+                    num +=1
+            else:
+                while num <=100:
+                    stop = stack.pop(path)
+                    print("Ruta {0}: ".format(num))
+                    entry = m.get(cont["stations"], stop["elements"][stop["size"]-1])
+                    print("Estación destino: {0} - ID: {1}".format(entry["value"]["elements"][0], stop["elements"][stop["size"]-1]))
+                    print("Tiempo en recorrer: {0} minutos\n".format((round(stop["distance"]/60, 2))))
+                    num +=1
+        else:
+            while (not stack.isEmpty(path)):
+                    stop = stack.pop(path)
+                    print("Ruta {0}: ".format(num))
+                    for statid in stop["elements"]:
+                        entry = m.get(cont["stations"], statid)
+                        print("{0} - ID: {1}".format(entry["value"]["elements"][0], statid))
+                    print("Tiempo en recorrer: {0} minutos\n".format((round(stop["distance"]/60, 2))))           
+                    num +=1
+    else:
+        print('No hay camino')
+    """
     path = controller.minimumCostPath(cont, destStation)
     if path is not None:
         pathlen = stack.size(path)
@@ -135,7 +173,7 @@ def optionSix():
             print(stop["first"])
             
     else:
-        print('No hay camino')
+        print('No hay camino')"""
 
 
 def optionSeven():
@@ -172,7 +210,6 @@ while True:
         print("Tiempo de ejecución: " + str(executiontime))
 
     elif int(inputs[0]) == 6:
-        destStation = input("Estación destino (Ej: 15151-10): ")
         executiontime = timeit.timeit(optionSix, number=1)
         print("Tiempo de ejecución: " + str(executiontime))
 

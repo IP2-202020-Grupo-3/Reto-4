@@ -169,6 +169,38 @@ def getPaths(analyzer, initStation, distanciaIni, distanciaFin):
                     lt.addLast(finlist, stop)                  
         return finlist
 
+def resistancePath(analyzer, initStation, resistance):
+    if gr.containsVertex(analyzer["graph"], initStation) == True:
+        analyzer['paths'] = bfs.BreadthFisrtSearch(analyzer["graph"], initStation)
+        vertices = gr.vertices(analyzer["graph"])
+        iterador = it.newIterator(vertices)
+        LT = lt.newList("ARRAY_LIST")
+        finlist = lt.newList("ARRAY_LIST")
+        while it.hasNext(iterador):
+            vertice = it.next(iterador)
+            if bfs.hasPathTo(analyzer["paths"], vertice):
+                caminos = bfs.pathTo(analyzer["paths"], vertice)
+                ini = 0
+                fin = 1
+                peso = 0
+                while ini < lt.size(caminos)-1:
+                    arco = gr.getEdge(analyzer["graph"], caminos["elements"][ini], caminos["elements"][fin])
+                    peso += float(arco["weight"])
+                    ini +=1
+                    fin +=1
+                caminos["distance"] = peso
+                lt.addLast(LT, caminos)
+        if LT is not None:
+            resistenciamin = resistance*60
+            while (not stack.isEmpty(LT)):
+                stop = stack.pop(LT)
+                if float(stop["distance"]) <= resistenciamin and str(stop["elements"]) not in finlist:
+                    lt.addLast(finlist, stop)
+        return finlist
+        
+            
+                
+
 
 
 def minimumCostPaths(analyzer, initialStation):
