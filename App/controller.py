@@ -98,3 +98,9 @@ def getPaths(analyzer, initStation, distanciaIni, distanciaFin):
 
 def resistancePath(analyzer, initStation, resistance):
     return model.resistancePath(analyzer, initStation, resistance)
+
+def estCrit(analyzer):
+    return model.estCrit(analyzer)
+
+def recomendador(analyzer, edad):
+    return model.recomendador(analyzer, edad)

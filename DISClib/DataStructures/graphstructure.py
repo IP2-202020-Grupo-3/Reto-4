@@ -133,6 +133,12 @@ def vertices(graph):
     if (graph['type'] == "ADJ_LIST"):
         return alt.vertices(graph)
 
+def getVertex(graph, vertex):
+    if (graph['type'] == "ADJ_LIST"):
+        return alt.getvertex(graph, vertex)
+
+
+
 
 def edges(graph):
     """

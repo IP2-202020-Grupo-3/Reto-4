@@ -164,6 +164,13 @@ def vertices(graph):
     except Exception as exp:
         error.reraise(exp, 'ajlist:vertices')
 
+def getvertex(graph, key):
+    try:
+        lstmap = map.get(graph['vertices'], key)
+        return lstmap
+    except Exception as exp:
+        error.reraise(exp, 'ajlist:getvertex')
+
 
 def edges(graph):
     """

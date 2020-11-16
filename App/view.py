@@ -32,6 +32,7 @@ from DISClib.ADT import stack
 import timeit
 assert config
 from DISClib.ADT import map as m
+from DISClib.ADT import list as lt
 
 """
 La vista se encarga de la interacción con el usuario.
@@ -62,9 +63,9 @@ def printMenu():
     print("2- Cargar información")
     print("3- Calcular componentes conectados")
     print("4- Calcular ruta turística circular")
-    print("5- Pendiente")
+    print("5- Consultar top estaciones críticas")
     print("6- Calcular ruta turística por resistencia")
-    print("7- Pendiente")
+    print("7- Recomendador de rutas según edad")
     print("0- Salir")
     print("*******************************************")
 
@@ -120,9 +121,20 @@ def optionFour():
 
 
 def optionFive():
-    val = controller.minimumCostPaths(cont, initialStation)
-    if val == "0":
-        print("La estación ingresada no existe.")
+    entrada, salida, menores = controller.estCrit(cont)
+    print("\nLas 3 estaciones con mayor entrada de rutas son:")
+    for statid in entrada["elements"]:
+        entry = m.get(cont["stations"], statid)
+        print("{0} - ID: {1}".format(entry["value"]["elements"][0], statid))
+    print("\nLas 3 estaciones con mayor salida de rutas son:")
+    for statid in salida["elements"]:
+        entry = m.get(cont["stations"], statid)
+        print("{0} - ID: {1}".format(entry["value"]["elements"][0], statid))
+    print("\nLas 3 estaciones menos utilizadas son:")
+    for statid in menores["elements"]:
+        entry = m.get(cont["stations"], statid)
+        print("{0} - ID: {1}".format(entry["value"]["elements"][0], statid))
+
 
 
 def optionSix():
@@ -177,9 +189,23 @@ def optionSix():
 
 
 def optionSeven():
-    maxvert, maxdeg = controller.servedRoutes(cont)
-    print('Estación: ' + maxvert + '  Total rutas servidas: '
-          + str(maxdeg))
+    edad = input("Ingrese su edad: ")
+    inicialMax, finalMax, path = controller.recomendador(cont, edad)
+    if path is not None:
+        inicio = m.get(cont["stations"], inicialMax)
+        print("La estación de inicio de la ruta es: {0}".format(inicio["value"]["elements"][0]))
+        fin = m.get(cont["stations"], finalMax)
+        print("La estación final de la ruta es: {0}".format(fin["value"]["elements"][0]))
+        print("\nLa ruta encontrada es la siguiente: ")
+        for element in path["elements"]:
+            vertA = element["vertexA"]
+            entryA = m.get(cont["stations"], vertA)
+            print("{0} - ID: {1}".format(entryA["value"]["elements"][0], vertA)) 
+        vertFin = m.get(cont["stations"], path["elements"][lt.size(path)-1]["vertexB"])
+        print("{0} - ID: {1}\n".format(vertFin["value"]["elements"][0], vertFin["key"])) 
+
+             
+
 
 
 """

@@ -65,6 +65,10 @@ def newAnalyzer():
                                      maptype='PROBING',
                                      comparefunction=compareStations)
 
+    analyzer['stationsIni'] = m.newMap(numelements=2000,
+                                     maptype='PROBING',
+                                     comparefunction=compareStations)
+
     analyzer['graph'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
                                               size=10000,
@@ -72,7 +76,7 @@ def newAnalyzer():
     return analyzer
 
 
-# Funciones para agregar informacion al grafo
+# Funciones para agregar información al grafo
 
 def addTrip(analyzer, trip):
     origin = trip['start station id']
@@ -82,6 +86,7 @@ def addTrip(analyzer, trip):
     addStation(analyzer, destination)
     addConnection(analyzer, origin, destination, duration)
     addTripStop(analyzer, trip)
+    addTripStart(analyzer, trip)
     return analyzer
 
 def addStation(analyzer, stationid):
@@ -91,17 +96,92 @@ def addStation(analyzer, stationid):
 
 def addTripStop(analyzer, route):
     entry = m.get(analyzer['stations'], route["end station id"])
+    edades = {"0-10":0, "11-20":0, "21-30":0, "31-40":0, "41-50":0, "51-60":0, "60+":0}
     if entry is None:
         lststations = lt.newList("ARRAY_LIST", cmpfunction=compareroutes)
         lt.addLast(lststations, route["end station name"])
         lt.addLast(lststations, route["end station latitude"])
         lt.addLast(lststations, route["end station longitude"])
+        lt.addLast(lststations, edades)
+        if 2020-int(route["birth year"]) >=0 and 2020-int(route["birth year"]) <= 10:
+            lststations["elements"][3]["0-10"] += 1
+        elif 2020-int(route["birth year"]) >=11 and 2020-int(route["birth year"]) <= 20:
+            lststations["elements"][3]["11-20"] += 1
+        elif 2020-int(route["birth year"]) >=21 and 2020-int(route["birth year"]) <= 30:
+            lststations["elements"][3]["21-30"] += 1
+        elif 2020-int(route["birth year"]) >=31 and 2020-int(route["birth year"]) <= 40:
+            lststations["elements"][3]["31-40"] += 1
+        elif 2020-int(route["birth year"]) >=41 and 2020-int(route["birth year"]) <= 50:
+            lststations["elements"][3]["41-50"] += 1
+        elif 2020-int(route["birth year"]) >=51 and 2020-int(route["birth year"]) <= 60:
+                lststations["elements"][3]["51-60"] += 1
+        elif 2020-int(route["birth year"]) >60:
+            lststations["elements"][3]["60+"] += 1
         m.put(analyzer['stations'], route['end station id'], lststations)
     else:
         lststations = entry['value']
         info = route['end station name']
         if not lt.isPresent(lststations, info):
-            lt.addLast(lststations, info)
+            lt.addFirst(lststations, info)
+            if 2020-int(route["birth year"]) >=0 and 2020-int(route["birth year"]) <= 10:
+                lststations["elements"][3]["0-10"] += 1
+            elif 2020-int(route["birth year"]) >=11 and 2020-int(route["birth year"]) <= 20:
+                lststations["elements"][3]["11-20"] += 1
+            elif 2020-int(route["birth year"]) >=21 and 2020-int(route["birth year"]) <= 30:
+                lststations["elements"][3]["21-30"] += 1
+            elif 2020-int(route["birth year"]) >=31 and 2020-int(route["birth year"]) <= 40:
+                lststations["elements"][3]["31-40"] += 1
+            elif 2020-int(route["birth year"]) >=41 and 2020-int(route["birth year"]) <= 50:
+                lststations["elements"][3]["41-50"] += 1
+            elif 2020-int(route["birth year"]) >=51 and 2020-int(route["birth year"]) <= 60:
+                lststations["elements"][3]["51-60"] += 1
+            elif 2020-int(route["birth year"]) >60:
+                lststations["elements"][3]["60+"] += 1
+    return analyzer
+
+def addTripStart(analyzer, route):
+    entry = m.get(analyzer['stationsIni'], route["start station id"])
+    edades = {"0-10":0, "11-20":0, "21-30":0, "31-40":0, "41-50":0, "51-60":0, "60+":0}
+    if entry is None:
+        lststations = lt.newList("ARRAY_LIST", cmpfunction=compareroutes)
+        lt.addLast(lststations, route["start station name"])
+        lt.addLast(lststations, route["start station latitude"])
+        lt.addLast(lststations, route["start station longitude"])
+        lt.addLast(lststations, edades)
+        if 2020-int(route["birth year"]) >=0 and 2020-int(route["birth year"]) <= 10:
+            lststations["elements"][3]["0-10"] += 1
+        elif 2020-int(route["birth year"]) >=11 and 2020-int(route["birth year"]) <= 20:
+            lststations["elements"][3]["11-20"] += 1
+        elif 2020-int(route["birth year"]) >=21 and 2020-int(route["birth year"]) <= 30:
+            lststations["elements"][3]["21-30"] += 1
+        elif 2020-int(route["birth year"]) >=31 and 2020-int(route["birth year"]) <= 40:
+            lststations["elements"][3]["31-40"] += 1
+        elif 2020-int(route["birth year"]) >=41 and 2020-int(route["birth year"]) <= 50:
+            lststations["elements"][3]["41-50"] += 1
+        elif 2020-int(route["birth year"]) >=51 and 2020-int(route["birth year"]) <= 60:
+            lststations["elements"][3]["51-60"] += 1
+        elif 2020-int(route["birth year"]) >60:
+            lststations["elements"][3]["60+"] += 1
+        m.put(analyzer['stationsIni'], route['start station id'], lststations)
+    else:
+        lststations = entry['value']
+        info = route['start station name']
+        if not lt.isPresent(lststations, info):
+            lt.addFirst(lststations, info)
+            if 2020-int(route["birth year"]) >=0 and 2020-int(route["birth year"]) <= 10:
+                lststations["elements"][3]["0-10"] += 1
+            elif 2020-int(route["birth year"]) >=11 and 2020-int(route["birth year"]) <= 20:
+                lststations["elements"][3]["11-20"] += 1
+            elif 2020-int(route["birth year"]) >=21 and 2020-int(route["birth year"]) <= 30:
+                lststations["elements"][3]["21-30"] += 1
+            elif 2020-int(route["birth year"]) >=31 and 2020-int(route["birth year"]) <= 40:
+                lststations["elements"][3]["31-40"] += 1
+            elif 2020-int(route["birth year"]) >=41 and 2020-int(route["birth year"]) <= 50:
+                lststations["elements"][3]["41-50"] += 1
+            elif 2020-int(route["birth year"]) >=51 and 2020-int(route["birth year"]) <= 60:
+                lststations["elements"][3]["51-60"] += 1
+            elif 2020-int(route["birth year"]) >60:
+                lststations["elements"][3]["60+"] += 1
     return analyzer
 
 def addConnection(analyzer, origin, destination, duration):
@@ -198,10 +278,268 @@ def resistancePath(analyzer, initStation, resistance):
                     lt.addLast(finlist, stop)
         return finlist
         
-            
-                
+def estCrit(analyzer):
+    vertices = gr.vertices(analyzer["graph"])
+    dicc1 = {}
+    dicc2 = {}
+    dicc3 = {}
+    entrada = lt.newList("ARRAY_LIST")
+    salida = lt.newList("ARRAY_LIST")
+    menores = lt.newList("ARRAY_LIST")
+    iterador = it.newIterator(vertices)
+    while it.hasNext(iterador):
+        vertice = it.next(iterador)
+        num = gr.indegree(analyzer["graph"], vertice)
+        dicc1[vertice] = num
+        num2 = gr.outdegree(analyzer["graph"], vertice)
+        dicc2[vertice] = num2
+        num3 = gr.degree(analyzer["graph"], vertice)
+        dicc3[vertice] = num3
+
+    for i in range(3):
+        llavesEntrada = list(dicc1.keys())
+        valoresEntrada = list(dicc1.values())
+        mayorEntrada = max(valoresEntrada)
+        entradaMax = str(llavesEntrada[valoresEntrada.index(mayorEntrada)])
+        lt.addLast(entrada, entradaMax)
+        dicc1.pop(entradaMax)
+
+    for i in range(3):
+        llavesSalida = list(dicc2.keys())
+        valoresSalida = list(dicc2.values())
+        mayorSalida = max(valoresSalida)
+        salidaMax = str(llavesSalida[valoresSalida.index(mayorSalida)])
+        lt.addLast(salida, salidaMax)
+        dicc2.pop(salidaMax)
+    
+    for i in range(3):
+        llavesMenores = list(dicc3.keys())
+        valoresMenores = list(dicc3.values())
+        mayorMenores = min(valoresMenores)
+        menoresMax = str(llavesMenores[valoresMenores.index(mayorMenores)])
+        lt.addLast(menores, menoresMax)
+        dicc3.pop(menoresMax)
+    
+    return entrada, salida, menores
 
 
+
+
+def recomendador(analyzer, edad):
+    if int(edad) >=0 and int(edad) <= 10:
+        edad = "0-10"
+    elif int(edad) >=11 and int(edad) <= 20:
+       edad = "11-20"
+    elif int(edad) >=21 and int(edad) <= 30:
+        edad = "21-30"
+    elif int(edad) >=31 and int(edad) <= 40:
+        edad = "31-40"
+    elif int(edad) >=41 and int(edad) <= 50:
+        edad = "41-50"
+    elif int(edad) >=51 and int(edad) <= 60:
+        edad = "51-60"
+    elif int(edad) >60:
+        edad = "60+"
+    dicc1 = {}
+    dicc2 = {}
+    vertices = gr.vertices(analyzer["graph"])
+    iterador = it.newIterator(vertices)
+    if edad == "0-10":
+        while it.hasNext(iterador):
+            vertice = it.next(iterador)
+            estFin = m.get(analyzer["stations"], vertice)
+            estIni = m.get(analyzer["stationsIni"], vertice)
+            if estIni is not None:
+                key = estFin["key"]
+                dicc1[key] = estIni["value"]["elements"][3]["0-10"]
+            if estFin is not None:
+                key = estFin["key"]
+                dicc2[key] = estFin["value"]["elements"][3]["0-10"]
+        
+        llavesInicial = list(dicc1.keys())
+        valoresInicial = list(dicc1.values())
+        mayorInicial = max(valoresInicial)
+        inicialMax = str(llavesInicial[valoresInicial.index(mayorInicial)])
+
+        llavesFinal = list(dicc2.keys())
+        valoresFinal = list(dicc2.values())
+        mayorFinal = max(valoresFinal)
+        finalMax = str(llavesFinal[valoresFinal.index(mayorFinal)])
+
+        minimumCostPaths(analyzer, inicialMax)
+        
+        path = minimumCostPath(analyzer, finalMax)
+
+        return inicialMax, finalMax, path
+
+    elif edad == "11-20":
+        while it.hasNext(iterador):
+            vertice = it.next(iterador)
+            estFin = m.get(analyzer["stations"], vertice)
+            estIni = m.get(analyzer["stationsIni"], vertice)
+            if estIni is not None:
+                key = estFin["key"]
+                dicc1[key] = estIni["value"]["elements"][3]["11-20"]
+            if estFin is not None:
+                key = estFin["key"]
+                dicc2[key] = estFin["value"]["elements"][3]["11-20"]
+        
+        llavesInicial = list(dicc1.keys())
+        valoresInicial = list(dicc1.values())
+        mayorInicial = max(valoresInicial)
+        inicialMax = str(llavesInicial[valoresInicial.index(mayorInicial)])
+
+        llavesFinal = list(dicc2.keys())
+        valoresFinal = list(dicc2.values())
+        mayorFinal = max(valoresFinal)
+        finalMax = str(llavesFinal[valoresFinal.index(mayorFinal)])
+
+        minimumCostPaths(analyzer, inicialMax)
+        
+        path = minimumCostPath(analyzer, finalMax)
+
+        return inicialMax, finalMax, path
+
+    elif edad == "21-30":
+        while it.hasNext(iterador):
+            vertice = it.next(iterador)
+            estFin = m.get(analyzer["stations"], vertice)
+            estIni = m.get(analyzer["stationsIni"], vertice)
+            if estIni is not None:
+                key = estFin["key"]
+                dicc1[key] = estIni["value"]["elements"][3]["21-30"]
+            if estFin is not None:
+                key = estFin["key"]
+                dicc2[key] = estFin["value"]["elements"][3]["21-30"]
+        
+        llavesInicial = list(dicc1.keys())
+        valoresInicial = list(dicc1.values())
+        mayorInicial = max(valoresInicial)
+        inicialMax = str(llavesInicial[valoresInicial.index(mayorInicial)])
+
+        llavesFinal = list(dicc2.keys())
+        valoresFinal = list(dicc2.values())
+        mayorFinal = max(valoresFinal)
+        finalMax = str(llavesFinal[valoresFinal.index(mayorFinal)])
+
+        minimumCostPaths(analyzer, inicialMax)
+        
+        path = minimumCostPath(analyzer, finalMax)
+
+        return inicialMax, finalMax, path
+
+    elif edad == "31-40":
+        while it.hasNext(iterador):
+            vertice = it.next(iterador)
+            estFin = m.get(analyzer["stations"], vertice)
+            estIni = m.get(analyzer["stationsIni"], vertice)
+            if estIni is not None:
+                key = estFin["key"]
+                dicc1[key] = estIni["value"]["elements"][3]["31-40"]
+            if estFin is not None:
+                key = estFin["key"]
+                dicc2[key] = estFin["value"]["elements"][3]["31-40"]
+        
+        llavesInicial = list(dicc1.keys())
+        valoresInicial = list(dicc1.values())
+        mayorInicial = max(valoresInicial)
+        inicialMax = str(llavesInicial[valoresInicial.index(mayorInicial)])
+
+        llavesFinal = list(dicc2.keys())
+        valoresFinal = list(dicc2.values())
+        mayorFinal = max(valoresFinal)
+        finalMax = str(llavesFinal[valoresFinal.index(mayorFinal)])
+
+        minimumCostPaths(analyzer, inicialMax)
+        
+        path = minimumCostPath(analyzer, finalMax)
+
+        return inicialMax, finalMax, path
+
+    elif edad == "41-50":
+        while it.hasNext(iterador):
+            vertice = it.next(iterador)
+            estFin = m.get(analyzer["stations"], vertice)
+            estIni = m.get(analyzer["stationsIni"], vertice)
+            if estIni is not None:
+                key = estFin["key"]
+                dicc1[key] = estIni["value"]["elements"][3]["41-50"]
+            if estFin is not None:
+                key = estFin["key"]
+                dicc2[key] = estFin["value"]["elements"][3]["41-50"]
+        
+        llavesInicial = list(dicc1.keys())
+        valoresInicial = list(dicc1.values())
+        mayorInicial = max(valoresInicial)
+        inicialMax = str(llavesInicial[valoresInicial.index(mayorInicial)])
+
+        llavesFinal = list(dicc2.keys())
+        valoresFinal = list(dicc2.values())
+        mayorFinal = max(valoresFinal)
+        finalMax = str(llavesFinal[valoresFinal.index(mayorFinal)])
+
+        minimumCostPaths(analyzer, inicialMax)
+        
+        path = minimumCostPath(analyzer, finalMax)
+
+        return inicialMax, finalMax, path
+
+    elif edad == "51-60":
+        while it.hasNext(iterador):
+            vertice = it.next(iterador)
+            estFin = m.get(analyzer["stations"], vertice)
+            estIni = m.get(analyzer["stationsIni"], vertice)
+            if estIni is not None:
+                key = estFin["key"]
+                dicc1[key] = estIni["value"]["elements"][3]["51-60"]
+            if estFin is not None:
+                key = estFin["key"]
+                dicc2[key] = estFin["value"]["elements"][3]["51-60"]
+        
+        llavesInicial = list(dicc1.keys())
+        valoresInicial = list(dicc1.values())
+        mayorInicial = max(valoresInicial)
+        inicialMax = str(llavesInicial[valoresInicial.index(mayorInicial)])
+
+        llavesFinal = list(dicc2.keys())
+        valoresFinal = list(dicc2.values())
+        mayorFinal = max(valoresFinal)
+        finalMax = str(llavesFinal[valoresFinal.index(mayorFinal)])
+
+        minimumCostPaths(analyzer, inicialMax)
+        
+        path = minimumCostPath(analyzer, finalMax)
+
+        return inicialMax, finalMax, path
+
+    elif edad == "60+":
+        while it.hasNext(iterador):
+            vertice = it.next(iterador)
+            estFin = m.get(analyzer["stations"], vertice)
+            estIni = m.get(analyzer["stationsIni"], vertice)
+            if estIni is not None:
+                key = estFin["key"]
+                dicc1[key] = estIni["value"]["elements"][3]["60+"]
+            if estFin is not None:
+                key = estFin["key"]
+                dicc2[key] = estFin["value"]["elements"][3]["60+"]
+        
+        llavesInicial = list(dicc1.keys())
+        valoresInicial = list(dicc1.values())
+        mayorInicial = max(valoresInicial)
+        inicialMax = str(llavesInicial[valoresInicial.index(mayorInicial)])
+
+        llavesFinal = list(dicc2.keys())
+        valoresFinal = list(dicc2.values())
+        mayorFinal = max(valoresFinal)
+        finalMax = str(llavesFinal[valoresFinal.index(mayorFinal)])
+
+        minimumCostPaths(analyzer, inicialMax)
+        
+        path = minimumCostPath(analyzer, finalMax)
+
+        return inicialMax, finalMax, path
+                      
 
 def minimumCostPaths(analyzer, initialStation):
     if gr.containsVertex(analyzer["graph"], initialStation) == True:
@@ -235,6 +573,10 @@ def compareStations(st1, st2):
         return -1
 
 def compareroutes(route1, route2):
+    if type(route1) is dict:
+        route1 = str(route1)
+    elif type(route2) is dict:
+        route2 = str(route2)
     if (route1 == route2):
         return 0
     elif (route1 > route2):
