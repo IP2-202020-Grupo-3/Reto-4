@@ -35,6 +35,7 @@ from DISClib.DataStructures import edge as ed
 from DISClib.Algorithms.Graphs import bfs
 from DISClib.ADT import stack
 assert config
+from math import radians, cos, sin, asin, sqrt
 
 """
 En este archivo definimos los TADs que vamos a usar y las operaciones
@@ -555,9 +556,60 @@ def minimumCostPath(analyzer, destStation):
     path = djk.pathTo(analyzer['paths'], destStation)
     return path
 
+def rutaTuris(analyzer, latOri, longOri, latDest, longDest):
+    dicc1 = {}
+    dicc2 = {}
+    vertices = gr.vertices(analyzer["graph"])
+    iterador = it.newIterator(vertices)
+    while it.hasNext(iterador):
+        vertice = it.next(iterador)
+        estIni = m.get(analyzer["stations"], vertice)
+        distanciaOri = distance(latOri, float(estIni["value"]["elements"][1]), longOri, float(estIni["value"]["elements"][2]))
+        distanciaDest = distance(latDest, float(estIni["value"]["elements"][1]), longDest, float(estIni["value"]["elements"][2]))
+        dicc1[vertice] = distanciaOri
+        dicc2[vertice] = distanciaDest
+
+    llavesInicial = list(dicc1.keys())
+    valoresInicial = list(dicc1.values())
+    mayorInicial = min(valoresInicial)
+    inicialMin = str(llavesInicial[valoresInicial.index(mayorInicial)])
+
+    llavesFinal = list(dicc2.keys())
+    valoresFinal = list(dicc2.values())
+    mayorFinal = min(valoresFinal)
+    finalMin = str(llavesFinal[valoresFinal.index(mayorFinal)])
+
+    minimumCostPaths(analyzer, inicialMin)
+
+    path = minimumCostPath(analyzer, finalMin)
+
+    return inicialMin, finalMin, path
+
 # ==============================
 # Funciones Helper
 # ==============================
+
+def distance(lat1, lat2, lon1, lon2): 
+      
+    # The math module contains a function named 
+    # radians which converts from degrees to radians. 
+    lon1 = radians(lon1) 
+    lon2 = radians(lon2) 
+    lat1 = radians(lat1) 
+    lat2 = radians(lat2) 
+       
+    # Haversine formula  
+    dlon = lon2 - lon1  
+    dlat = lat2 - lat1 
+    a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
+  
+    c = 2 * asin(sqrt(a))  
+     
+    # Radius of earth in kilometers. Use 3956 for miles 
+    r = 6371
+       
+    # calculate the result 
+    return(c * r * 1.609344)
 
 # ==============================
 # Funciones de Comparación

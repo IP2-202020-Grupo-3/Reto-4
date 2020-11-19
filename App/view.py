@@ -66,7 +66,7 @@ def printMenu():
     print("5- Consultar top estaciones críticas")
     print("6- Calcular ruta turística por resistencia")
     print("7- Recomendador de rutas según edad")
-    print("8- Ruta de interes turístico")
+    print("8- Ruta de interés turístico")
     print("0- Salir")
     print("*******************************************")
 
@@ -109,14 +109,37 @@ def optionFour():
         pathlen = stack.size(path)
         num = 1
         print('Se encontraron {0} rutas:\n'.format(pathlen))
-        while (not stack.isEmpty(path)):
-            stop = stack.pop(path)
-            print("Ruta {0}: ".format(num))
-            for statid in stop["elements"]:
-                entry = m.get(cont["stations"], statid)
-                print("{0} - ID: {1}".format(entry["value"]["elements"][0], statid))
-            print("Tiempo en recorrer: {0} minutos\n".format((round(stop["distance"]/60, 2))))           
-            num +=1
+        if pathlen >= 100:
+            dec = input("¿Desea imprimir la información de todas las rutas? (tenga en cuenta de que se encontraron demasiadas rutas) [S/N]\nSi responde N se mostrarán solo las primeras 100: ")
+            if dec == "S" or dec == "s":
+                while (not stack.isEmpty(path)):
+                    stop = stack.pop(path)
+                    print("Ruta {0}: ".format(num))
+                    for statid in stop["elements"]:
+                        entry = m.get(cont["stations"], statid)
+                        print("{0} - ID: {1}".format(entry["value"]["elements"][0], statid))
+                    print("Tiempo en recorrer: {0} minutos\n".format((round(stop["distance"]/60, 2))))           
+                    num +=1
+            else:
+                while num <=100:
+                    stop = stack.pop(path)
+                    print("Ruta {0}: ".format(num))
+                    for statid in stop["elements"]:
+                        entry = m.get(cont["stations"], statid)
+                        print("{0} - ID: {1}".format(entry["value"]["elements"][0], statid))
+                    print("Tiempo en recorrer: {0} minutos\n".format((round(stop["distance"]/60, 2))))           
+                    num +=1
+        else:
+            while (not stack.isEmpty(path)):
+                stop = stack.pop(path)
+                print("Ruta {0}: ".format(num))
+                for statid in stop["elements"]:
+                    entry = m.get(cont["stations"], statid)
+                    print("{0} - ID: {1}".format(entry["value"]["elements"][0], statid))
+                print("Tiempo en recorrer: {0} minutos\n".format((round(stop["distance"]/60, 2))))           
+                num +=1
+
+
     else:
         print('No hay camino')
 
@@ -161,7 +184,9 @@ def optionSix():
                 while num <=100:
                     stop = stack.pop(path)
                     print("Ruta {0}: ".format(num))
+                    entryIn = m.get(cont["stations"], stop["elements"][0])
                     entry = m.get(cont["stations"], stop["elements"][stop["size"]-1])
+                    print("Estación origen: {0} - ID: {1}".format(entryIn["value"]["elements"][0], stop["elements"][0]))
                     print("Estación destino: {0} - ID: {1}".format(entry["value"]["elements"][0], stop["elements"][stop["size"]-1]))
                     print("Tiempo en recorrer: {0} minutos\n".format((round(stop["distance"]/60, 2))))
                     num +=1
@@ -176,18 +201,6 @@ def optionSix():
                     num +=1
     else:
         print('No hay camino')
-    """
-    path = controller.minimumCostPath(cont, destStation)
-    if path is not None:
-        pathlen = stack.size(path)
-        print('El camino es de longitud: ' + str(pathlen))
-        while (not stack.isEmpty(path)):
-            stop = stack.pop(path)
-            print(stop["first"])
-            
-    else:
-        print('No hay camino')"""
-
 
 def optionSeven():
     edad = input("Ingrese su edad: ")
@@ -206,11 +219,32 @@ def optionSeven():
         print("{0} - ID: {1}\n".format(vertFin["value"]["elements"][0], vertFin["key"])) 
 
 def optionEight():
-    latitudini = input("Ingrese la latitud inicial: ")
-    longitudini = input("Ingrese la longitud inicial: ")
-    latitudfin = input("Ingrese la latitud final: ")
-    longitudfin = input("Ingrese la longitud final: ")
-    estacioncercana, estacioncercanavisit, tiempo, listestaciones = scontroller.RutaTuristica(cont,lai,loi,laf,lof)
+    latitudini = float(input("Ingrese la latitud inicial: "))
+    longitudini = float(input("Ingrese la longitud inicial: "))
+    latitudfin = float(input("Ingrese la latitud final: "))
+    longitudfin = float(input("Ingrese la longitud final: "))
+    inicial, final, path = controller.RutaTuristica(cont,latitudini, longitudini, latitudfin, longitudfin)
+    if path is not None:
+        inicio = m.get(cont["stations"], inicial)
+        print("La estación más cercana a su ubicación es: {0}".format(inicio["value"]["elements"][0]))
+        fin = m.get(cont["stations"], final)
+        print("La estación más cercana a su punto de interés es: {0}".format(fin["value"]["elements"][0]))
+        if inicio["value"]["elements"][0] == fin["value"]["elements"][0]:
+            print("La estación de origen y la estación de destino son las mismas")
+        else:
+            print("\nLa ruta encontrada es la siguiente: ")
+            tiempo = 0
+            for element in path["elements"]:
+                vertA = element["vertexA"]
+                entryA = m.get(cont["stations"], vertA)
+                print("{0} - ID: {1}".format(entryA["value"]["elements"][0], vertA))
+                tiempo += element["weight"] 
+            vertFin = m.get(cont["stations"], path["elements"][lt.size(path)-1]["vertexB"])
+            tiempo = round(tiempo/60, 2)
+            print("{0} - ID: {1}\n".format(vertFin["value"]["elements"][0], vertFin["key"]))
+            print("El tiempo estimado de viaje es: {0} minutos".format(tiempo))
+    else:
+        print('No hay camino entre las estaciones.')
 
 
 
