@@ -66,6 +66,7 @@ def printMenu():
     print("5- Consultar top estaciones críticas")
     print("6- Calcular ruta turística por resistencia")
     print("7- Recomendador de rutas según edad")
+    print("8- Ruta de interes turístico")
     print("0- Salir")
     print("*******************************************")
 
@@ -204,7 +205,12 @@ def optionSeven():
         vertFin = m.get(cont["stations"], path["elements"][lt.size(path)-1]["vertexB"])
         print("{0} - ID: {1}\n".format(vertFin["value"]["elements"][0], vertFin["key"])) 
 
-             
+def optionEight():
+    latitudini = input("Ingrese la latitud inicial: ")
+    longitudini = input("Ingrese la longitud inicial: ")
+    latitudfin = input("Ingrese la latitud final: ")
+    longitudfin = input("Ingrese la longitud final: ")
+    estacioncercana, estacioncercanavisit, tiempo, listestaciones = scontroller.RutaTuristica(cont,lai,loi,laf,lof)
 
 
 
@@ -241,6 +247,10 @@ while True:
 
     elif int(inputs[0]) == 7:
         executiontime = timeit.timeit(optionSeven, number=1)
+        print("Tiempo de ejecución: " + str(executiontime))
+
+    elif int(inputs[0]) == 8:
+        executiontime = timeit.timeit(optionEight, number=1)
         print("Tiempo de ejecución: " + str(executiontime))
     else:
         sys.exit(0)

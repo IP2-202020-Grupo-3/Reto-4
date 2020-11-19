@@ -104,3 +104,6 @@ def estCrit(analyzer):
 
 def recomendador(analyzer, edad):
     return model.recomendador(analyzer, edad)
+
+def RutaTuristica(analyzer,lai,loi,laf,lof):
+    return model.rutaturistica(analyzer,lai,loi,laf,lof)
