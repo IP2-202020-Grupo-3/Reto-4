@@ -244,8 +244,9 @@ def getPaths(analyzer, initStation, distanciaIni, distanciaFin):
             minIni = distanciaIni*60
             maxIni = distanciaFin*60
             while (not stack.isEmpty(LT)):
+                maxIni = distanciaFin*60
                 stop = stack.pop(LT)
-                maxIni -= int(stop["size"])*20
+                maxIni -= int(stop["size"]-1)*20
                 if stop["distance"] >= minIni and stop["distance"] <= maxIni: 
                     lt.addLast(finlist, stop)                  
         return finlist
