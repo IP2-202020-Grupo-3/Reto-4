@@ -100,10 +100,12 @@ def addTripStop(analyzer, route):
     edades = {"0-10":0, "11-20":0, "21-30":0, "31-40":0, "41-50":0, "51-60":0, "60+":0}
     if entry is None:
         lststations = lt.newList("ARRAY_LIST", cmpfunction=compareroutes)
+        cantViajes = {"cantidad viajes": 1}
         lt.addLast(lststations, route["end station name"])
         lt.addLast(lststations, route["end station latitude"])
         lt.addLast(lststations, route["end station longitude"])
         lt.addLast(lststations, edades)
+        lt.addLast(lststations, cantViajes)
         if 2020-int(route["birth year"]) >=0 and 2020-int(route["birth year"]) <= 10:
             lststations["elements"][3]["0-10"] += 1
         elif 2020-int(route["birth year"]) >=11 and 2020-int(route["birth year"]) <= 20:
@@ -115,29 +117,27 @@ def addTripStop(analyzer, route):
         elif 2020-int(route["birth year"]) >=41 and 2020-int(route["birth year"]) <= 50:
             lststations["elements"][3]["41-50"] += 1
         elif 2020-int(route["birth year"]) >=51 and 2020-int(route["birth year"]) <= 60:
-                lststations["elements"][3]["51-60"] += 1
+            lststations["elements"][3]["51-60"] += 1
         elif 2020-int(route["birth year"]) >60:
             lststations["elements"][3]["60+"] += 1
         m.put(analyzer['stations'], route['end station id'], lststations)
     else:
         lststations = entry['value']
-        info = route['end station name']
-        if not lt.isPresent(lststations, info):
-            lt.addFirst(lststations, info)
-            if 2020-int(route["birth year"]) >=0 and 2020-int(route["birth year"]) <= 10:
-                lststations["elements"][3]["0-10"] += 1
-            elif 2020-int(route["birth year"]) >=11 and 2020-int(route["birth year"]) <= 20:
-                lststations["elements"][3]["11-20"] += 1
-            elif 2020-int(route["birth year"]) >=21 and 2020-int(route["birth year"]) <= 30:
-                lststations["elements"][3]["21-30"] += 1
-            elif 2020-int(route["birth year"]) >=31 and 2020-int(route["birth year"]) <= 40:
-                lststations["elements"][3]["31-40"] += 1
-            elif 2020-int(route["birth year"]) >=41 and 2020-int(route["birth year"]) <= 50:
-                lststations["elements"][3]["41-50"] += 1
-            elif 2020-int(route["birth year"]) >=51 and 2020-int(route["birth year"]) <= 60:
-                lststations["elements"][3]["51-60"] += 1
-            elif 2020-int(route["birth year"]) >60:
-                lststations["elements"][3]["60+"] += 1
+        if 2020-int(route["birth year"]) >=0 and 2020-int(route["birth year"]) <= 10:
+            lststations["elements"][3]["0-10"] += 1
+        elif 2020-int(route["birth year"]) >=11 and 2020-int(route["birth year"]) <= 20:
+            lststations["elements"][3]["11-20"] += 1
+        elif 2020-int(route["birth year"]) >=21 and 2020-int(route["birth year"]) <= 30:
+            lststations["elements"][3]["21-30"] += 1
+        elif 2020-int(route["birth year"]) >=31 and 2020-int(route["birth year"]) <= 40:
+            lststations["elements"][3]["31-40"] += 1
+        elif 2020-int(route["birth year"]) >=41 and 2020-int(route["birth year"]) <= 50:
+            lststations["elements"][3]["41-50"] += 1
+        elif 2020-int(route["birth year"]) >=51 and 2020-int(route["birth year"]) <= 60:
+            lststations["elements"][3]["51-60"] += 1
+        elif 2020-int(route["birth year"]) >60:
+            lststations["elements"][3]["60+"] += 1
+        lststations["elements"][4]["cantidad viajes"] +=1
     return analyzer
 
 def addTripStart(analyzer, route):
@@ -145,10 +145,12 @@ def addTripStart(analyzer, route):
     edades = {"0-10":0, "11-20":0, "21-30":0, "31-40":0, "41-50":0, "51-60":0, "60+":0}
     if entry is None:
         lststations = lt.newList("ARRAY_LIST", cmpfunction=compareroutes)
+        cantViajes = {"cantidad viajes": 1}
         lt.addLast(lststations, route["start station name"])
         lt.addLast(lststations, route["start station latitude"])
         lt.addLast(lststations, route["start station longitude"])
         lt.addLast(lststations, edades)
+        lt.addLast(lststations, cantViajes)
         if 2020-int(route["birth year"]) >=0 and 2020-int(route["birth year"]) <= 10:
             lststations["elements"][3]["0-10"] += 1
         elif 2020-int(route["birth year"]) >=11 and 2020-int(route["birth year"]) <= 20:
@@ -166,23 +168,21 @@ def addTripStart(analyzer, route):
         m.put(analyzer['stationsIni'], route['start station id'], lststations)
     else:
         lststations = entry['value']
-        info = route['start station name']
-        if not lt.isPresent(lststations, info):
-            lt.addFirst(lststations, info)
-            if 2020-int(route["birth year"]) >=0 and 2020-int(route["birth year"]) <= 10:
-                lststations["elements"][3]["0-10"] += 1
-            elif 2020-int(route["birth year"]) >=11 and 2020-int(route["birth year"]) <= 20:
-                lststations["elements"][3]["11-20"] += 1
-            elif 2020-int(route["birth year"]) >=21 and 2020-int(route["birth year"]) <= 30:
-                lststations["elements"][3]["21-30"] += 1
-            elif 2020-int(route["birth year"]) >=31 and 2020-int(route["birth year"]) <= 40:
-                lststations["elements"][3]["31-40"] += 1
-            elif 2020-int(route["birth year"]) >=41 and 2020-int(route["birth year"]) <= 50:
-                lststations["elements"][3]["41-50"] += 1
-            elif 2020-int(route["birth year"]) >=51 and 2020-int(route["birth year"]) <= 60:
-                lststations["elements"][3]["51-60"] += 1
-            elif 2020-int(route["birth year"]) >60:
-                lststations["elements"][3]["60+"] += 1
+        if 2020-int(route["birth year"]) >=0 and 2020-int(route["birth year"]) <= 10:
+            lststations["elements"][3]["0-10"] += 1
+        elif 2020-int(route["birth year"]) >=11 and 2020-int(route["birth year"]) <= 20:
+            lststations["elements"][3]["11-20"] += 1
+        elif 2020-int(route["birth year"]) >=21 and 2020-int(route["birth year"]) <= 30:
+            lststations["elements"][3]["21-30"] += 1
+        elif 2020-int(route["birth year"]) >=31 and 2020-int(route["birth year"]) <= 40:
+            lststations["elements"][3]["31-40"] += 1
+        elif 2020-int(route["birth year"]) >=41 and 2020-int(route["birth year"]) <= 50:
+            lststations["elements"][3]["41-50"] += 1
+        elif 2020-int(route["birth year"]) >=51 and 2020-int(route["birth year"]) <= 60:
+            lststations["elements"][3]["51-60"] += 1
+        elif 2020-int(route["birth year"]) >60:
+            lststations["elements"][3]["60+"] += 1
+        lststations["elements"][4]["cantidad viajes"] +=1
     return analyzer
 
 def addConnection(analyzer, origin, destination, duration):
@@ -291,11 +291,16 @@ def estCrit(analyzer):
     iterador = it.newIterator(vertices)
     while it.hasNext(iterador):
         vertice = it.next(iterador)
-        num = gr.indegree(analyzer["graph"], vertice)
-        dicc1[vertice] = num
-        num2 = gr.outdegree(analyzer["graph"], vertice)
-        dicc2[vertice] = num2
-        num3 = gr.degree(analyzer["graph"], vertice)
+        num = m.get(analyzer["stations"], vertice)
+        dicc1[vertice] = num["value"]["elements"][4]["cantidad viajes"]
+        num2 = m.get(analyzer["stationsIni"], vertice)
+        if num2 is None:
+            num2 = 0
+            dicc2[vertice] = 0
+            num3 = num["value"]["elements"][4]["cantidad viajes"]
+        else:
+            dicc2[vertice] = num2["value"]["elements"][4]["cantidad viajes"]
+            num3 = int(num["value"]["elements"][4]["cantidad viajes"]) + int(num2["value"]["elements"][4]["cantidad viajes"])
         dicc3[vertice] = num3
 
     for i in range(3):
